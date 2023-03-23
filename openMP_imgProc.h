@@ -6,7 +6,13 @@
 //class to hold the functionality for openMP img processing
 
 class openMP_imgProcessor {
-    std::vector<std::vector<double>> LapKernel_ = { {0, -1, 0}, {-1, 4, -1}, {0, -1, 0} };
+    std::vector<std::vector<double>> LapKernel_ = {
+    {0, 0, 1, 0, 0},
+    {0, 1, 2, 1, 0},
+    {1, 2, -7, 2, 1},
+    {0, 1, 2, 1, 0},
+    {0, 0, 1, 0, 0}
+    };
 
 public:
     void sharpenImg(cv::Mat& input);
