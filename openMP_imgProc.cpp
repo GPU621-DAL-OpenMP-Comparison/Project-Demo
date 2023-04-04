@@ -1,6 +1,9 @@
 #include "openMP_imgProc.h"
 
 void openMP_imgProcessor::sharpenImg(cv::Mat& input) {
+    //supressing OpenCV messages
+    std::streambuf* coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(nullptr);
     // Convert the input image to grayscale
     cv::Mat grayscale;
     cv::cvtColor(input, grayscale, cv::COLOR_BGR2GRAY);
@@ -21,9 +24,16 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& input) {
             }
         }
     }
+
+    //stop supressing
+    std::cout.rdbuf(coutbuf);
 }
 
 void openMP_imgProcessor::brightenImg(cv::Mat& image, int brightnessLvl) {
+    //supressing OpenCV messages
+    std::streambuf* coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(nullptr);
+
     int width = image.cols;
     int height = image.rows;
     int channels = image.channels();
@@ -37,4 +47,7 @@ void openMP_imgProcessor::brightenImg(cv::Mat& image, int brightnessLvl) {
             }
         }
     }
+
+    //stop supressing
+    std::cout.rdbuf(coutbuf);
 }
