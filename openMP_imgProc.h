@@ -15,6 +15,9 @@ class openMP_imgProcessor {
     };
 
 public:
+ImgProcessor_OMP() {
+        omp_set_num_threads(15);
+    }
     void sharpenImg(cv::Mat& input);
     void brightenImg(cv::Mat& input, int brightnessLvl);
     //saturateImg
