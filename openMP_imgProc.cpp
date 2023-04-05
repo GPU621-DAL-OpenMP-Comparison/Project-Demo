@@ -20,7 +20,7 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
                 }
             }
             for (int c = 0; c < 3; c++) {
-                image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * 0.15);
+                image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * 0.99);
             }
         }
     }
