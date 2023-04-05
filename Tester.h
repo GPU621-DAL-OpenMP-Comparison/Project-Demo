@@ -14,9 +14,9 @@ public:
     Tester(std::string imgPath) {
         img_ = cv::imread(imgPath);
 
-        outputPath_ = imgPath.substr(0, imgPath.find("."));
+        outputPath_ = imgPath.substr(0, imgPath.find_last_of("."));
         outputPath_ += "_modified";
-        outputPostfix_ = imgPath.substr(imgPath.find("."), imgPath.length());
+        outputPostfix_ = imgPath.substr(imgPath.find_last_of("."), imgPath.length());
     }
 
     void brighten(int level) {
