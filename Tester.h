@@ -41,6 +41,5 @@ public:
         std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
 
         cv::imwrite(outputPath_ + "_sharpened" + outputPostfix_, outputImg);
-        std::cout << "Altered image save to at \"" << outputPath_ + "_sharpened" + outputPostfix_ << "\"\n";
     }
 };
