@@ -13,6 +13,7 @@ class Tester {
 public:
     Tester(std::string imgPath) {
         img_ = cv::imread(imgPath);
+        if (img_.empty()) std::cerr << "empty img!\n" << "unable to locate img at " << imgPath << std::endl;
 
         outputPath_ = imgPath.substr(0, imgPath.find_last_of("."));
         outputPath_ += "_modified";
@@ -28,7 +29,7 @@ public:
         timer.stop();
         std::cout << "Image brightening time: " << timer.currtime() << std::endl;
 
-        cv::imwrite(outputPath_ + "_brightened" + outputPostfix_, outputImg);
+        cv::imwrite(outputPath_ + "_OMPbrightened" + outputPostfix_, outputImg);
     }
 
     void omp_sharpen() {
@@ -40,6 +41,6 @@ public:
         timer.stop();
         std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
 
-        cv::imwrite(outputPath_ + "_sharpened" + outputPostfix_, outputImg);
+        cv::imwrite(outputPath_ + "_OMPsharpened" + outputPostfix_, outputImg);
     }
 };

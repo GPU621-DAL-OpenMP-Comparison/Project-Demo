@@ -8,6 +8,7 @@
 //class to hold the functionality for openMP img processing
 
 class openMP_imgProcessor {
+    //laplacian kernel used in sharpening
     std::vector<std::vector<double>> LapKernel_ = {
     {0, 0, 1, 0, 0},
     {0, 1, 2, 1, 0},
@@ -22,5 +23,4 @@ openMP_imgProcessor() {
     }
     void sharpenImg(cv::Mat& image);
     void brightenImg(cv::Mat& image, int brightnessLvl);
-    //saturateImg
 };
