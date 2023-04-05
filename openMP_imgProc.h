@@ -3,6 +3,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <omp.h>
 
 //class to hold the functionality for openMP img processing
 
@@ -16,7 +17,7 @@ class openMP_imgProcessor {
     };
 
 public:
-ImgProcessor_OMP() {
+openMP_imgProcessor() {
         omp_set_num_threads(15);
     }
     void sharpenImg(cv::Mat& input);
