@@ -10,6 +10,7 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
 
 
     // Apply the kernel to the grayscale image
+    //finds areas with quick jumps from dark to light, increases contrast there
     #pragma omp parallel for
     for (int x = 1; x < image.cols - 1; x++) {
         for (int y = 1; y < image.rows - 1; y++) {
@@ -19,6 +20,7 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
                     sum += grayscale.at<uchar>(y + j, x + i) * LapKernel_[i + 1][j + 1];
                 }
             }
+            //apply filter
             for (int c = 0; c < 3; c++) {
                 image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * 0.99);
             }

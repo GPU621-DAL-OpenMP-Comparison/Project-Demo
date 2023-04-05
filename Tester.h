@@ -19,7 +19,7 @@ public:
         outputPostfix_ = imgPath.substr(imgPath.find_last_of("."), imgPath.length());
     }
 
-    void brighten(int level) {
+    void omp_brighten(int level) {
         cv::Mat outputImg = img_.clone();
 
         timer.reset();
@@ -31,7 +31,7 @@ public:
         cv::imwrite(outputPath_ + "_brightened" + outputPostfix_, outputImg);
     }
 
-    void sharpen() {
+    void omp_sharpen() {
         cv::Mat outputImg = img_.clone();
 
         timer.reset();
