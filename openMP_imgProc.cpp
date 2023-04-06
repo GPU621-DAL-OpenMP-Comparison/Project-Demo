@@ -8,7 +8,6 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
     cv::Mat grayscale;
     cv::cvtColor(image, grayscale, cv::COLOR_BGR2GRAY);
 
-
     // Apply the kernel to the grayscale image
     //finds areas with quick jumps from dark to light, increases contrast there
     #pragma omp parallel for
