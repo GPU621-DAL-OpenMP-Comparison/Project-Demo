@@ -91,6 +91,5 @@ public:
         std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
 
         cv::imwrite(outputPath_ + "_sharpened_omp" + outputPostfix_, outputImg);
-
     }
 };

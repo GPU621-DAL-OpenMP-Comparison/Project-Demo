@@ -14,7 +14,7 @@ int main() {
 	//show times and altered images
 	//do DAAL run
 	//show times and altered images
-	demo.display_img();
+	demo.display_img(0);
 
 	demo.omp_brighten(50);
 	demo.omp_sharpen();
