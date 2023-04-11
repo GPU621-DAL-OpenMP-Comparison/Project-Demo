@@ -12,11 +12,10 @@ int main() {
 	demo.omp_brighten(50);
 	demo.omp_sharpen();
 	demo.omp_saturate(2.0);
-	//disables OpenMP for further runs
+	//disable OpenMP for other runs
 	omp_set_num_threads(1);
 	omp_set_dynamic(0);
 	
-
 	//run TBB/DAAL
 
 	//run serial
