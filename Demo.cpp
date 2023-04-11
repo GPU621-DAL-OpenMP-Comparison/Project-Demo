@@ -17,6 +17,7 @@ int main() {
 	omp_set_dynamic(0);
 	
 	//run TBB/DAAL
+	demo.ipp_all();
 
 	//run serial
 	cv::setNumThreads(0);	//turn all parallelization of the backend off

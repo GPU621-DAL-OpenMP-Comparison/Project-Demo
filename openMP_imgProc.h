@@ -29,6 +29,4 @@ openMP_imgProcessor() {
     void sharpenImg(cv::Mat& image);
     void brightenImg(cv::Mat& image, int brightnessLvl);
     void saturateImg(cv::Mat& image, double saturationLvl);
-    void saturateImgTbb(cv::Mat& image, double saturationLvl);
-    void saturateSub(cv::Mat& image, double saturationLvl);
 };

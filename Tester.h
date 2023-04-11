@@ -2,22 +2,27 @@
 #include <string>
 #include "openMP_imgProc.h"
 #include "serial_imgproc.h"
+#include "ipp_imgProc.h"
 #include "Timer.h"
 
 class Tester {
     cv::Mat img_;
     std::string outputPath_;
     std::string outputPostfix_;
+    std::string imgPath_;
 
     openMP_imgProcessor omp_processor_ = openMP_imgProcessor();
     serial_imgProcessor serial_processor_ = serial_imgProcessor();
+    IppImgProc ipp_processor_;
 
-    //iDal_imgProcessor
     Timer timer;
 public:
     Tester(std::string imgPath) {
+        imgPath_ = imgPath;
         img_ = cv::imread(imgPath);
         if (img_.empty()) std::cerr << "empty img!\n" << "unable to locate img at " << imgPath << std::endl;
+
+        
 
         outputPath_ = imgPath.substr(0, imgPath.find_last_of("."));
         outputPath_ += "_modified";
@@ -115,6 +120,15 @@ public:
         timer.stop();
         std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
         cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
+    }
+
+    void ipp_all() {
+        ipp_processor_ = IppImgProc(imgPath_);
+
+        ipp_processor_.displayInputImage(5000);
+        ipp_processor_.sharpening();
+        ipp_processor_.brighten(50, 0);
+        ipp_processor_.adjustSaturation(0);
     }
 
     void serial_brighten(int level) {
