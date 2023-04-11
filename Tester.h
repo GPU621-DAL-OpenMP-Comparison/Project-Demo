@@ -7,7 +7,12 @@ class Tester {
     cv::Mat img_;
     std::string outputPath_;
     std::string outputPostfix_;
-    openMP_imgProcessor processor_ = openMP_imgProcessor::openMP_imgProcessor();
+
+    //Original line
+    //openMP_imgProcessor processor_ = openMP_imgProcessor::openMP_imgProcessor();
+    
+    //Jared- this is what I did to avoid redundancy with above line
+    openMP_imgProcessor processor_ = openMP_imgProcessor();
     //iDal_imgProcessor
     Timer timer;
 public:
@@ -57,6 +62,16 @@ public:
                 cv::imshow(s_winName, disp_sharp);
                 cv::waitKey(0);
                 cv::destroyWindow(s_winName);
+
+                //J Saturate
+                cv::Mat disp_saturate = cv::imread(outputPath_ + "_saturated_omp" + outputPostfix_);
+                cv::resize(disp_saturate, disp_saturate, cv::Size(960, 540));
+                std::string sat_winName = "OMP - Saturated";
+                cv::imshow(sat_winName, disp_saturate);
+                cv::waitKey(0);
+                cv::destroyWindow(sat_winName);
+
+
             }
             if (selection == 2) {
                 std::cerr << "DAAL implementation not yet built!\n";
@@ -92,4 +107,15 @@ public:
 
         cv::imwrite(outputPath_ + "_sharpened_omp" + outputPostfix_, outputImg);
     }
+
+    void omp_saturate(int level) {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        processor_.saturateImg(outputImg, level);
+        timer.stop();
+        std::cout << "Image saturating time: " << timer.currtime() << std::endl;
+        cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
+    }
+
 };

@@ -1,5 +1,6 @@
 #include "openMP_imgProc.h"
 
+
 void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
     //supressing OpenCV messages
     std::streambuf* coutbuf = std::cout.rdbuf();
@@ -52,3 +53,41 @@ void openMP_imgProcessor::brightenImg(cv::Mat& image, int brightnessLvl) {
     //stop supressing
     std::cout.rdbuf(coutbuf);
 }
+
+//Saturation Increase here
+void openMP_imgProcessor::saturateImg(cv::Mat& image, double saturationLvl) {
+
+    //supressing OpenCV messages
+    std::streambuf* coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(nullptr);
+
+    //HSV stands for hue saturation value
+    cv::Mat hsv;
+    cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV);
+
+
+    #pragma omp parallel for
+    for (int y = 0; y < hsv.rows; ++y)
+    {
+        for (int x = 0; x < hsv.cols; ++x)
+        {
+            // Get pixel value
+            cv::Vec3b color = hsv.at<cv::Vec3b>(cv::Point(x, y));
+
+            // Increase saturation by saturation Lvl color[1] is for saturation 
+            color[1] = cv::saturate_cast<uchar>(color[1] * saturationLvl);
+
+            // Set pixel value
+            hsv.at<cv::Vec3b>(cv::Point(x, y)) = color;
+        }
+    }
+
+    cv::cvtColor(hsv, image, cv::COLOR_HSV2BGR);
+
+
+    std::cout.rdbuf(coutbuf);
+
+}
+
+
+
