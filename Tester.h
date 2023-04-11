@@ -4,6 +4,7 @@
 #include "serial_imgproc.h"
 #include "ipp_imgProc.h"
 #include "Timer.h"
+using namespace std::chrono;
 
 class Tester {
     cv::Mat img_;
@@ -92,9 +93,10 @@ public:
 
         timer.reset();
         timer.start();
-        omp_processor_.brightenImg(outputImg, level);
+        omp_processor_.brightenImg(outputImg, level);        
         timer.stop();
-        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
+
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
 
         cv::imwrite(outputPath_ + "_brightened_omp" + outputPostfix_, outputImg);
 
@@ -107,7 +109,7 @@ public:
         timer.start();
         omp_processor_.sharpenImg(outputImg);
         timer.stop();
-        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
 
         cv::imwrite(outputPath_ + "_sharpened_omp" + outputPostfix_, outputImg);
     }
@@ -118,7 +120,7 @@ public:
         timer.start();
         omp_processor_.saturateImg(outputImg, level);
         timer.stop();
-        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
         cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
     }
 
@@ -138,7 +140,7 @@ public:
         timer.start();
         omp_processor_.brightenImg(outputImg, level);
         timer.stop();
-        std::cout << "Image brightening time: " << timer.currtime() << std::endl;
+        std::cout << "Image brightening time: " << timer.currtime() << " milliseconds" << std::endl;
 
         cv::imwrite(outputPath_ + "_brightened_serial" + outputPostfix_, outputImg);
 
@@ -151,7 +153,7 @@ public:
         timer.start();
         omp_processor_.sharpenImg(outputImg);
         timer.stop();
-        std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
+        std::cout << "Image sharpening time: " << timer.currtime() << " milliseconds" << std::endl;
 
         cv::imwrite(outputPath_ + "_sharpened_serial" + outputPostfix_, outputImg);
     }
@@ -162,7 +164,7 @@ public:
         timer.start();
         omp_processor_.saturateImg(outputImg, level);
         timer.stop();
-        std::cout << "Image saturating time: " << timer.currtime() << std::endl;
+        std::cout << "Image saturating time: " << timer.currtime() << " milliseconds" << std::endl;
         cv::imwrite(outputPath_ + "_saturated_serial" + outputPostfix_, outputImg);
     }
 
