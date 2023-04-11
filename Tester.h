@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include "openMP_imgProc.h"
+#include "serial_imgproc.h"
 #include "Timer.h"
 
 class Tester {
@@ -8,11 +9,9 @@ class Tester {
     std::string outputPath_;
     std::string outputPostfix_;
 
-    //Original line
-    //openMP_imgProcessor processor_ = openMP_imgProcessor::openMP_imgProcessor();
-    
-    //Jared- this is what I did to avoid redundancy with above line
-    openMP_imgProcessor processor_ = openMP_imgProcessor();
+    openMP_imgProcessor omp_processor_ = openMP_imgProcessor();
+    serial_imgProcessor serial_processor_ = serial_imgProcessor();
+
     //iDal_imgProcessor
     Timer timer;
 public:
@@ -88,9 +87,9 @@ public:
 
         timer.reset();
         timer.start();
-        processor_.brightenImg(outputImg, level);
+        omp_processor_.brightenImg(outputImg, level);
         timer.stop();
-        std::cout << "Image brightening time: " << timer.currtime() << std::endl;
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
 
         cv::imwrite(outputPath_ + "_brightened_omp" + outputPostfix_, outputImg);
 
@@ -101,9 +100,9 @@ public:
 
         timer.reset();
         timer.start();
-        processor_.sharpenImg(outputImg);
+        omp_processor_.sharpenImg(outputImg);
         timer.stop();
-        std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
 
         cv::imwrite(outputPath_ + "_sharpened_omp" + outputPostfix_, outputImg);
     }
@@ -112,10 +111,45 @@ public:
         cv::Mat outputImg = img_.clone();
         timer.reset();
         timer.start();
-        processor_.saturateImg(outputImg, level);
+        omp_processor_.saturateImg(outputImg, level);
+        timer.stop();
+        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << std::endl;
+        cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
+    }
+
+    void serial_brighten(int level) {
+        cv::Mat outputImg = img_.clone();
+
+        timer.reset();
+        timer.start();
+        omp_processor_.brightenImg(outputImg, level);
+        timer.stop();
+        std::cout << "Image brightening time: " << timer.currtime() << std::endl;
+
+        cv::imwrite(outputPath_ + "_brightened_serial" + outputPostfix_, outputImg);
+
+    }
+
+    void serial_sharpen() {
+        cv::Mat outputImg = img_.clone();
+
+        timer.reset();
+        timer.start();
+        omp_processor_.sharpenImg(outputImg);
+        timer.stop();
+        std::cout << "Image sharpening time: " << timer.currtime() << std::endl;
+
+        cv::imwrite(outputPath_ + "_sharpened_serial" + outputPostfix_, outputImg);
+    }
+
+    void serial_saturate(int level) {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        omp_processor_.saturateImg(outputImg, level);
         timer.stop();
         std::cout << "Image saturating time: " << timer.currtime() << std::endl;
-        cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
+        cv::imwrite(outputPath_ + "_saturated_serial" + outputPostfix_, outputImg);
     }
 
 };

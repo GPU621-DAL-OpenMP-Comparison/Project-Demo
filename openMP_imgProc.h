@@ -1,3 +1,4 @@
+#pragma once
 #include <cmath>
 #include <vector>
 #include <opencv2/core.hpp>
@@ -23,7 +24,7 @@ class openMP_imgProcessor {
 
 public:
 openMP_imgProcessor() {
-        omp_set_num_threads(15);
+        
     }
     void sharpenImg(cv::Mat& image);
     void brightenImg(cv::Mat& image, int brightnessLvl);

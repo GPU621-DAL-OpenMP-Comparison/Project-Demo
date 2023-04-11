@@ -3,20 +3,27 @@
 
 //TODO accept CL arguments
 int main() {
-
-	//Tester demo("../sample_images/field.jpg");
-	//D:\School_Win23\GPU625\Project\Project-Demo\Project-Demo\sample_images
-	//Tester demo("D:/School_Win23/GPU625/Project/Project-Demo/Project-Demo/sample_images/field.jpg");
 	
-	Tester demo("test.jpg");
-	//show starter images
-	//do omp run
-	//show times and altered images
-	//do DAAL run
-	//show times and altered images
-	demo.display_img(0);
+	Tester demo("../sample_images/test.jpg");	
+	demo.display_img(0);	
 
+	//run omp
+	omp_set_num_threads(15);
 	demo.omp_brighten(50);
 	demo.omp_sharpen();
 	demo.omp_saturate(2.0);
+	//disables OpenMP for further runs
+	omp_set_num_threads(1);
+	omp_set_dynamic(0);
+	
+
+	//run TBB/DAAL
+
+	//run serial
+	cv::setNumThreads(0);	//turn all parallelization of the backend off
+	demo.serial_brighten(50);
+	demo.serial_sharpen();
+	demo.serial_saturate(2.0);
+
+	demo.display_img(1);
 }
