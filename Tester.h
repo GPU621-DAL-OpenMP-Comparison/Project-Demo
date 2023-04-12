@@ -160,7 +160,7 @@ public:
         cv::Mat outputImg = img_.clone();
         timer.reset();
         timer.start();
-        ipp_processor_.adjustSaturation(150);
+        ipp_processor_.adjustSaturation(0);
         timer.stop();
 
         std::cout << "Image saturation time w/ IPP: " << timer.currtime() << " milliseconds\n";
