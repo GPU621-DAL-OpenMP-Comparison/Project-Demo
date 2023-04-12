@@ -92,6 +92,7 @@ Of course, as can be seen from the charts below, each parallelized option is far
 
 ![chart with serial runtime](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsChart_wSerial.PNG?raw=true)
 
+
 ## Documentation
 
 [Intel's DAAL Developer Guide and Reference](https://www.intel.com/content/www/us/en/develop/documentation/onedal-developer-guide-and-reference/top.html)
