@@ -72,8 +72,6 @@ public:
 };
 ```
 
-As can be seen from the sharpenImg() function above, OpenMP excels most when it comes to ease of implementation. The #pragma definition is all that is needed to convert this from a serial operation to a parallel one.
-
 ### TBB Implementation
 
 The TBB implementation was relatively simple, though not quite as simple as the OpenMP implementation. It's class declaration is essentially the same as the OpenMP image processor, and uses the same Laplacian kernel. The primary difference is that instead of being able to simply use a #pragma to parallelize the code, we use the parallel_for functionality from TBB. We use the dimensions of the image to get the range, and then placed our functionality inside the lambda to be passed into the parallel_for call. 
