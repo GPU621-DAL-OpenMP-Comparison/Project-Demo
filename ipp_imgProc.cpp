@@ -21,20 +21,19 @@ IppImgProc::IppImgProc(const std::string& filename)
 void IppImgProc::sharpening()
 {
     // Set up the sharpening filter
-    IppiMaskSize maskSize = ippMskSize3x3;
-    //  Ipp8u kernel[] = { -1, -1, -1, -1, 9, -1, -1, -1, -1 };
+    IppiMaskSize maskSize = ippMskSize5x5;
 
-      // Get the required buffer size
+    // Get the required buffer size
     int bufferSize = 0;
-    ippiFilterSharpenBorderGetBufferSize({ width_, height_ }, maskSize, ipp8u, ipp8u, 3, &bufferSize);
-
+    // ippiFilterSharpenBorderGetBufferSize({ width_, height_ }, maskSize, ipp8u, ipp8u, 3, &bufferSize);
+    ippiFilterLaplaceBorderGetBufferSize({ width_, height_ }, maskSize, ipp8u, ipp8u, 3, &bufferSize);
     // Allocate memory for the temporary buffer
     Ipp8u* pBuffer = ippsMalloc_8u(bufferSize);
 
-
-    IppiBorderType borderType = ippBorderRepl;
+    IppiBorderType borderType = ippBorderConst;
     Ipp8u borderValue[] = { 0, 0, 0 };
-    IppStatus status = ippiFilterSharpenBorder_8u_C3R(gray8Img_.data, gray8Img_.step, outImg_.data, outImg_.step,
+    // ippiFilterSharpenBorder_8u_C3R
+    IppStatus status = ippiFilterLaplaceBorder_8u_C3R(gray8Img_.data, gray8Img_.step, outImg_.data, outImg_.step,
         { width_, height_ }, maskSize, borderType, borderValue, pBuffer);
 
     // Free the temporary buffer
@@ -44,6 +43,12 @@ void IppImgProc::sharpening()
     if (status != ippStsNoErr) {
         throw std::runtime_error("IPP error");
     }
+
+    // Define the blending ratio (0.0 to 1.0)
+    double alpha = 0.82;
+
+    // Blend the original image and the output image
+    cv::addWeighted(img_, alpha, outImg_, 1 - alpha, 0.0, outImg_);
 
 
 }

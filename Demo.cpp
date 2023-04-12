@@ -22,10 +22,9 @@ int main(int argc, char* argv[]) {
 
 	//run tbb
 	demo.tbb_brighten(50);
-	demo.tbb_saturate(2.0);
 	demo.tbb_sharpen();
+	demo.tbb_saturate(2.0);
 	
-
 	//run serial
 	cv::setNumThreads(0);	//turn all parallelization of the backend off
 	demo.serial_brighten(50);

@@ -68,19 +68,26 @@ void tbb_imgProcessor::sharpenImg(cv::Mat& image) {
     cv::Mat grayscale;
     cv::cvtColor(image, grayscale, cv::COLOR_BGR2GRAY);
 
-    tbb::parallel_for(1, image.cols - 1, [&](int x) {
-        for (int y = 1; y < image.rows - 1; y++) {
-            double sum = 0.0;
-            for (int i = -1; i <= 1; i++) {
-                for (int j = -1; j <= 1; j++) {
-                    sum += grayscale.at<uchar>(y + j, x + i) * LapKernel_[i + 1][j + 1];
+    int height = image.rows;
+    int width = image.cols;
+    int channels = image.channels();
+
+    tbb::parallel_for(tbb::blocked_range2d<int>(1, height - 1, 1, width - 1),
+        [&](const tbb::blocked_range2d<int>& range) {
+            for (int y = range.rows().begin(); y != range.rows().end(); y++) {
+                for (int x = range.cols().begin(); x != range.cols().end(); x++) {
+                    double sum = 0.0;
+                    for (int i = -1; i <= 1; i++) {
+                        for (int j = -1; j <= 1; j++) {
+                            sum += grayscale.at<uchar>(y + j, x + i) * LapKernel_[i + 1][j + 1];
+                        }
+                    }
+
+                    for (int c = 0; c < channels; c++) {
+                        image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * .99);
+                    }
                 }
             }
-
-            for (int c = 0; c < 3; c++) {
-                image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * .99);
-            }
-        }
         });
 
     //stop suppressing
