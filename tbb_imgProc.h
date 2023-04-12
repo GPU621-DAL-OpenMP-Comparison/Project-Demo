@@ -8,7 +8,7 @@
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
 #include <tbb/tbb.h>
-
+//
 class tbb_imgProcessor {
     std::vector<std::vector<double>> LapKernel_ = {
     {0, 0, 1},
