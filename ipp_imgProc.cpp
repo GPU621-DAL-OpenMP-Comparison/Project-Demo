@@ -49,8 +49,6 @@ void IppImgProc::sharpening()
 
     // Blend the original image and the output image
     cv::addWeighted(img_, alpha, outImg_, 1 - alpha, 0.0, outImg_);
-
-
 }
 
 void IppImgProc::brighten(int brightness, int scaleFactor)
@@ -83,7 +81,6 @@ void IppImgProc::brighten(int brightness, int scaleFactor)
     if (status != ippStsNoErr) {
         throw std::runtime_error("IPP error");
     }
-
 }
 
 
@@ -119,7 +116,6 @@ void IppImgProc::adjustSaturation(Ipp8u saturation)
     pDst = outImg_.data;
     dstStep = step;
     ippiHSVToRGB_8u_C3R(pSrc, srcStep, pDst, dstStep, size);
-
 }
 
 
