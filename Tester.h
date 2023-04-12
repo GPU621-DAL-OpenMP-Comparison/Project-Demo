@@ -168,6 +168,16 @@ public:
         ipp_processor_.saveOutputImage(outputPath_ + "_saturate_ipp" + outputPostfix_);
     }
 
+    void tbb_saturate(int level) {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        processor_.saturateImgTbb(outputImg, level);
+        timer.stop();
+        std::cout << "TBB Image saturating time: " << timer.currtime() << std::endl;
+        cv::imwrite(outputPath_ + "_saturated_tbb" + outputPostfix_, outputImg);
+    }
+
     void serial_brighten(int level) {
         cv::Mat outputImg = img_.clone();
 

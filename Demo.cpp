@@ -21,6 +21,9 @@ int main(int argc, char* argv[]) {
 	demo.ipp_sharpen();
 	demo.ipp_saturate();
 
+	//run tbb
+	demo.tbb_saturate(2.0);
+
 	//run serial
 	cv::setNumThreads(0);	//turn all parallelization of the backend off
 	demo.serial_brighten(50);
