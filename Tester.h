@@ -176,7 +176,7 @@ public:
         timer.start();
         tbb_processor_.saturateImg(outputImg, level);
         timer.stop();
-        std::cout << "TBB Image saturating time: " << timer.currtime() << std::endl;
+        std::cout << "Image saturating time w/ TBB: " << timer.currtime() << " milliseconds\n";
         cv::imwrite(outputPath_ + "_saturated_tbb" + outputPostfix_, outputImg);
     }
 
@@ -186,7 +186,7 @@ public:
         timer.start();
         tbb_processor_.brightenImg(outputImg, level);
         timer.stop();
-        std::cout << "TBB Image brighten time: " << timer.currtime() << std::endl;
+        std::cout << "Image brighten time w/ TBB: " << timer.currtime() << " milliseconds\n";
         cv::imwrite(outputPath_ + "_brightened_tbb" + outputPostfix_, outputImg);
     }
 
@@ -196,7 +196,7 @@ public:
         timer.start();
         tbb_processor_.sharpenImg(outputImg);
         timer.stop();
-        std::cout << "TBB Image sharpen time: " << timer.currtime() << std::endl;
+        std::cout << "Image sharpen time w/TBB: " << timer.currtime() << " milliseconds\n";
         cv::imwrite(outputPath_ + "_sharp_tbb" + outputPostfix_, outputImg);
     }
 
