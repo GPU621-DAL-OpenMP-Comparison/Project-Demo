@@ -8,11 +8,10 @@ int main(int argc, char* argv[]) {
 	demo.display_img(0);	
 
 	//run omp
-	//omp_set_num_threads(15); //Olivia- 15 was opt choice for my system
 	demo.omp_brighten(50);
 	demo.omp_sharpen();
 	demo.omp_saturate(2.0);
-	//disable OpenMP so it can't be incidently used in the backend
+	//disable OpenMP so it can't be incidently utilized in the backend
 	omp_set_num_threads(1);
 	omp_set_dynamic(0);
 	
@@ -22,7 +21,10 @@ int main(int argc, char* argv[]) {
 	demo.ipp_saturate();
 
 	//run tbb
+	demo.tbb_brighten(50);
 	demo.tbb_saturate(2.0);
+	demo.tbb_sharpen();
+	
 
 	//run serial
 	cv::setNumThreads(0);	//turn all parallelization of the backend off

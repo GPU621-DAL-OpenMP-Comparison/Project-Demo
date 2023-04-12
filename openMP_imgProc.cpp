@@ -88,46 +88,5 @@ void openMP_imgProcessor::saturateImg(cv::Mat& image, double saturationLvl) {
 
 }
 
-void openMP_imgProcessor::saturateImgTbb(cv::Mat& image, double saturationLvl) {
-
-
-    //supressing OpenCV messages
-
-    std::streambuf* coutbuf = std::cout.rdbuf();
-    std::cout.rdbuf(nullptr);
-
-    //HSV stands for hue saturation value
-    cv::Mat hsv;
-    cv::cvtColor(image, hsv, cv::COLOR_BGR2HSV);
-
-
-    //Set blocked range from the first entry to the last 
-    tbb::parallel_for(tbb::blocked_range<int>(0, hsv.rows), [&](const tbb::blocked_range<int>& r) {
-        for (int y = r.begin(); y < r.end(); ++y)
-        {
-            for (int x = 0; x < hsv.cols; ++x)
-            {
-                // Get pixel value
-                cv::Vec3b color = hsv.at<cv::Vec3b>(cv::Point(x, y));
-
-                // Increase saturation by saturation Lvl color[1] is for saturation 
-                color[1] = cv::saturate_cast<uchar>(color[1] * saturationLvl);
-
-                // Set pixel value
-                hsv.at<cv::Vec3b>(cv::Point(x, y)) = color;
-            }
-        }
-    });
-
-    //Convert image from HSV back to GBR
-    cv::cvtColor(hsv, image, cv::COLOR_HSV2BGR);
-
-
-    //stop supressing
-    std::cout.rdbuf(coutbuf);
-
-
-}
-
 
 

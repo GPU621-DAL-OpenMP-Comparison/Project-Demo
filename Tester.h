@@ -3,6 +3,7 @@
 #include "openMP_imgProc.h"
 #include "serial_imgproc.h"
 #include "ipp_imgProc.h"
+#include "tbb_imgProc.h"
 #include "Timer.h"
 #include <vector>
 using namespace std::chrono;
@@ -17,6 +18,7 @@ class Tester {
     openMP_imgProcessor omp_processor_ = openMP_imgProcessor();
     serial_imgProcessor serial_processor_ = serial_imgProcessor();
     IppImgProc ipp_processor_;
+    tbb_imgProcessor tbb_processor_;
 
     std::vector<long long> results_;
     
@@ -172,10 +174,30 @@ public:
         cv::Mat outputImg = img_.clone();
         timer.reset();
         timer.start();
-        processor_.saturateImgTbb(outputImg, level);
+        tbb_processor_.saturateImg(outputImg, level);
         timer.stop();
         std::cout << "TBB Image saturating time: " << timer.currtime() << std::endl;
         cv::imwrite(outputPath_ + "_saturated_tbb" + outputPostfix_, outputImg);
+    }
+
+    void tbb_brighten(int level) {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        tbb_processor_.brightenImg(outputImg, level);
+        timer.stop();
+        std::cout << "TBB Image brighten time: " << timer.currtime() << std::endl;
+        cv::imwrite(outputPath_ + "_brightened_tbb" + outputPostfix_, outputImg);
+    }
+
+    void tbb_sharpen() {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        tbb_processor_.sharpenImg(outputImg);
+        timer.stop();
+        std::cout << "TBB Image sharpen time: " << timer.currtime() << std::endl;
+        cv::imwrite(outputPath_ + "_sharp_tbb" + outputPostfix_, outputImg);
     }
 
     void serial_brighten(int level) {

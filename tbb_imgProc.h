@@ -7,11 +7,9 @@
 #include <omp.h>
 #include <opencv2/imgproc.hpp>
 #include <algorithm>
+#include <tbb/tbb.h>
 
-//class to hold the functionality for openMP img processing
-
-class openMP_imgProcessor {
-    //laplacian kernel used in sharpening
+class tbb_imgProcessor {
     std::vector<std::vector<double>> LapKernel_ = {
     {0, 0, 1},
     {0, 1, 2},
@@ -19,7 +17,7 @@ class openMP_imgProcessor {
     };
 
 public:
-    openMP_imgProcessor() { }
+    tbb_imgProcessor() { }
     void sharpenImg(cv::Mat& image);
     void brightenImg(cv::Mat& image, int brightnessLvl);
     void saturateImg(cv::Mat& image, double saturationLvl);
