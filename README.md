@@ -1,6 +1,6 @@
 ![Logo](https://i.ibb.co/vJLRX9Q/Image-Processing-GPU621-group3-header.png)
 
-# Image processing using Intel's DAAL vs. OpenMP
+# Image processing using Intel's IPP vs. OpenMP vs. TBB
 
 ### Introduction:
 
