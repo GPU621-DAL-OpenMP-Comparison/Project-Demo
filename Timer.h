@@ -10,7 +10,7 @@ class Timer {
     high_resolution_clock::time_point t1_;
     high_resolution_clock::time_point t2_;
 public:
-    Timer() {};
+    Timer() { reset(); };
     void reset() {
         duration_ = 0;
         t1_ = t2_ = {};

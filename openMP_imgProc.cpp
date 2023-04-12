@@ -2,16 +2,16 @@
 
 
 void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
+
     //supressing OpenCV messages
     std::streambuf* coutbuf = std::cout.rdbuf();
     std::cout.rdbuf(nullptr);
+
     // Convert the image to grayscale
     cv::Mat grayscale;
     cv::cvtColor(image, grayscale, cv::COLOR_BGR2GRAY);
-
-    // Apply the kernel to the grayscale image
-    //finds areas with quick jumps from dark to light, increases contrast there
-    #pragma omp parallel for
+    
+    #pragma omp parallel for    
     for (int x = 1; x < image.cols - 1; x++) {
         for (int y = 1; y < image.rows - 1; y++) {
             double sum = 0.0;
@@ -20,9 +20,9 @@ void openMP_imgProcessor::sharpenImg(cv::Mat& image) {
                     sum += grayscale.at<uchar>(y + j, x + i) * LapKernel_[i + 1][j + 1];
                 }
             }
-            //apply filter
+            
             for (int c = 0; c < 3; c++) {
-                image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * 0.99);
+                image.at<cv::Vec3b>(y, x)[c] = cv::saturate_cast<uchar>(image.at<cv::Vec3b>(y, x)[c] + sum * .99);
             }
         }
     }
@@ -84,7 +84,7 @@ void openMP_imgProcessor::saturateImg(cv::Mat& image, double saturationLvl) {
 
     cv::cvtColor(hsv, image, cv::COLOR_HSV2BGR);
 
-
+    //stop cv message supression
     std::cout.rdbuf(coutbuf);
 
 }

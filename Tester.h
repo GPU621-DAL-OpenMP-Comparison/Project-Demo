@@ -4,9 +4,11 @@
 #include "serial_imgproc.h"
 #include "ipp_imgProc.h"
 #include "Timer.h"
+#include <vector>
 using namespace std::chrono;
 
 class Tester {
+    Timer timer;
     cv::Mat img_;
     std::string outputPath_;
     std::string outputPostfix_;
@@ -16,14 +18,14 @@ class Tester {
     serial_imgProcessor serial_processor_ = serial_imgProcessor();
     IppImgProc ipp_processor_;
 
-    Timer timer;
+    std::vector<long long> results_;
+    
 public:
     Tester(std::string imgPath) {
         imgPath_ = imgPath;
+        ipp_processor_ = IppImgProc(imgPath_);
         img_ = cv::imread(imgPath);
         if (img_.empty()) std::cerr << "empty img!\n" << "unable to locate img at " << imgPath << std::endl;
-
-        
 
         outputPath_ = imgPath.substr(0, imgPath.find_last_of("."));
         outputPath_ += "_modified";
@@ -46,7 +48,7 @@ public:
                 cv::namedWindow("Original Img");
                 cv::imshow("Original Img", disp);
                 //press any key to close display and continue
-                cv::waitKey(0);
+                cv::waitKey(5000);
                 cv::destroyWindow("Original Img");
             }
             if (selection == 1) {
@@ -58,14 +60,14 @@ public:
                 cv::namedWindow(b_windowName);
                 cv::imshow(b_windowName, disp_bright);
                 //press any key to close display and continue
-                cv::waitKey(0);
+                cv::waitKey(5000);
                 cv::destroyWindow(b_windowName);
 
                 cv::Mat disp_sharp = cv::imread(outputPath_ + "_sharpened_omp" + outputPostfix_);
                 cv::resize(disp_sharp, disp_sharp, cv::Size(960, 540));
                 std::string s_winName = "OMP - Sharpened";
                 cv::imshow(s_winName, disp_sharp);
-                cv::waitKey(0);
+                cv::waitKey(5000);
                 cv::destroyWindow(s_winName);
 
                 //J Saturate
@@ -73,7 +75,7 @@ public:
                 cv::resize(disp_saturate, disp_saturate, cv::Size(960, 540));
                 std::string sat_winName = "OMP - Saturated";
                 cv::imshow(sat_winName, disp_saturate);
-                cv::waitKey(0);
+                cv::waitKey(5000);
                 cv::destroyWindow(sat_winName);
 
 
@@ -97,6 +99,7 @@ public:
         timer.stop();
 
         std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());
 
         cv::imwrite(outputPath_ + "_brightened_omp" + outputPostfix_, outputImg);
 
@@ -109,7 +112,8 @@ public:
         timer.start();
         omp_processor_.sharpenImg(outputImg);
         timer.stop();
-        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
+        std::cout << "Image sharpening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());
 
         cv::imwrite(outputPath_ + "_sharpened_omp" + outputPostfix_, outputImg);
     }
@@ -120,17 +124,48 @@ public:
         timer.start();
         omp_processor_.saturateImg(outputImg, level);
         timer.stop();
-        std::cout << "Image brightening time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
+        std::cout << "Image increased saturation time w/ OpenMP: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());
+
         cv::imwrite(outputPath_ + "_saturated_omp" + outputPostfix_, outputImg);
     }
 
-    void ipp_all() {
-        ipp_processor_ = IppImgProc(imgPath_);
+    void ipp_brighten(int level) {
+        cv::Mat outputImg = cv::Mat::zeros(img_.size(), img_.type());
 
-        ipp_processor_.displayInputImage(5000);
+        timer.reset();
+        timer.start();
+        ipp_processor_.brighten(level, 0);
+        timer.stop();
+        results_.push_back(timer.currtime());
+        std::cout << "Image brighten time w/ IPP: " << timer.currtime() << " milliseconds\n";
+
+        //cv::imwrite(outputPath_ + "_bright_ipp" + outputPostfix_, outputImg);
+        ipp_processor_.saveOutputImage(outputPath_ + "_bright_ipp" + outputPostfix_);
+    }
+
+    void ipp_sharpen() {
+        //cv::Mat outputImg = img_.clone();
+
+        timer.reset();
+        timer.start();
         ipp_processor_.sharpening();
-        ipp_processor_.brighten(50, 0);
-        ipp_processor_.adjustSaturation(0);
+        timer.stop();
+
+        std::cout << "Image sharpen time w/ IPP: " << timer.currtime() << " milliseconds\n";
+        ipp_processor_.saveOutputImage(outputPath_ + "_sharp_ipp" + outputPostfix_);
+    }
+
+    void ipp_saturate() {
+        cv::Mat outputImg = img_.clone();
+        timer.reset();
+        timer.start();
+        ipp_processor_.adjustSaturation(150);
+        timer.stop();
+
+        std::cout << "Image saturation time w/ IPP: " << timer.currtime() << " milliseconds\n";
+
+        ipp_processor_.saveOutputImage(outputPath_ + "_saturate_ipp" + outputPostfix_);
     }
 
     void serial_brighten(int level) {
@@ -138,22 +173,24 @@ public:
 
         timer.reset();
         timer.start();
-        omp_processor_.brightenImg(outputImg, level);
+        serial_processor_.brightenImg(outputImg, level);
         timer.stop();
         std::cout << "Image brightening time: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());
 
         cv::imwrite(outputPath_ + "_brightened_serial" + outputPostfix_, outputImg);
 
     }
-
+        
     void serial_sharpen() {
         cv::Mat outputImg = img_.clone();
 
         timer.reset();
         timer.start();
-        omp_processor_.sharpenImg(outputImg);
+        serial_processor_.sharpenImg(outputImg);
         timer.stop();
         std::cout << "Image sharpening time: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());
 
         cv::imwrite(outputPath_ + "_sharpened_serial" + outputPostfix_, outputImg);
     }
@@ -162,9 +199,11 @@ public:
         cv::Mat outputImg = img_.clone();
         timer.reset();
         timer.start();
-        omp_processor_.saturateImg(outputImg, level);
+        serial_processor_.saturateImg(outputImg, level);
         timer.stop();
         std::cout << "Image saturating time: " << timer.currtime() << " milliseconds" << std::endl;
+        results_.push_back(timer.currtime());   
+
         cv::imwrite(outputPath_ + "_saturated_serial" + outputPostfix_, outputImg);
     }
 

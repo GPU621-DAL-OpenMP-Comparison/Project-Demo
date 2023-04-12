@@ -20,9 +20,6 @@ IppImgProc::IppImgProc(const std::string& filename)
 
 void IppImgProc::sharpening()
 {
-    // Measure the time it takes to perform the sharpening operation using IPP
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
-
     // Set up the sharpening filter
     IppiMaskSize maskSize = ippMskSize3x3;
     //  Ipp8u kernel[] = { -1, -1, -1, -1, 9, -1, -1, -1, -1 };
@@ -47,25 +44,12 @@ void IppImgProc::sharpening()
     if (status != ippStsNoErr) {
         throw std::runtime_error("IPP error");
     }
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration_ = duration_cast<milliseconds>(t2 - t1).count();
 
-    // Print the processing time in milliseconds
-    std::cout << "Sharpening time: " << duration_ << " milliseconds" << std::endl;
 
-    // Resize the output image for display
-    cv::resize(outImg_, displayOutImg_, cv::Size(), displayScale_, displayScale_);
-
-    // Display the output image for 5 seconds
-    displayOutputImage(5000);
-
-    // Save the output image to file
-    saveOutputImage("sharpend_image.jpg");
 }
 
 void IppImgProc::brighten(int brightness, int scaleFactor)
-{
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
+{   
     // Create a matrix for the output image
     outImg_ = cv::Mat::zeros(img_.size(), img_.type());
 
@@ -95,26 +79,11 @@ void IppImgProc::brighten(int brightness, int scaleFactor)
         throw std::runtime_error("IPP error");
     }
 
-    // Resize the output image for display
-    cv::resize(outImg_, displayOutImg_, cv::Size(), displayScale_, displayScale_);
-
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration_ = duration_cast<milliseconds>(t2 - t1).count();
-
-    // Print the processing time in milliseconds
-    std::cout << "Brightening time: " << duration_ << " milliseconds " << std::endl;
-
-    // Display the output image for 5 seconds
-    displayOutputImage(5000);
-
-    // Save the output image to file
-    saveOutputImage("brightened_image.jpg");
 }
 
 
 void IppImgProc::adjustSaturation(Ipp8u saturation)
 {
-    high_resolution_clock::time_point t1 = high_resolution_clock::now();
     // Create an IPP image for the input image data
     IppiSize roi = { width_, height_ };
     Ipp8u* pData = gray8Img_.data;
@@ -146,20 +115,6 @@ void IppImgProc::adjustSaturation(Ipp8u saturation)
     dstStep = step;
     ippiHSVToRGB_8u_C3R(pSrc, srcStep, pDst, dstStep, size);
 
-    // Resize the output image for display
-    cv::resize(outImg_, displayOutImg_, cv::Size(), displayScale_, displayScale_);
-
-    high_resolution_clock::time_point t2 = high_resolution_clock::now();
-    duration_ = duration_cast<milliseconds>(t2 - t1).count();
-
-    // Print the processing time in milliseconds
-    std::cout << "Saturation time: " << duration_ << " milliseconds " << std::endl;
-
-    // Display the output image for 5 seconds
-    displayOutputImage(5000);
-
-    // Save the output image to file
-    saveOutputImage("Saturation.jpg");
 }
 
 
@@ -177,10 +132,17 @@ void IppImgProc::displayInputImage(int duration_ms)
 
 void IppImgProc::displayOutputImage(int duration_ms)
 {
-    cv::namedWindow("Output Image", cv::WINDOW_NORMAL);
-    cv::imshow("Output Image", displayOutImg_);
+    //supressing OpenCV messages
+    std::streambuf* coutbuf = std::cout.rdbuf();
+    std::cout.rdbuf(nullptr);
+
+    cv::namedWindow("Output Image - IPP", cv::WINDOW_NORMAL);
+    cv::imshow("Output Image - IPP", displayOutImg_);
     cv::waitKey(duration_ms);
-    cv::destroyWindow("Output Image");
+    cv::destroyWindow("Output Image - IPP");
+
+    //stop cv message supression
+    std::cout.rdbuf(coutbuf);
 }
 
 void IppImgProc::saveOutputImage(const std::string& filename)
