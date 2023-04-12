@@ -86,9 +86,11 @@ The OpenMP and TBB solutions were similar in runtime but the TBB solutions were 
 
 Of course, as can be seen from the charts below, each parallelized option is far faster than the serial implementation of these processes. 
 
-![alt text](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsSheet.PNG?raw=true)
+![results table](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsSheet.PNG?raw=true)
 
-![alt text](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsChart_woutSerial.PNG?raw=true)
+![chart without serial runtime](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsChart_woutSerial.PNG?raw=true)
+
+![chart with serial runtime](https://github.com/GPU621-DAL-OpenMP-Comparison/Project-Demo/blob/main/testResults/ResultsChart_wSerial.PNG?raw=true)
 
 ## Documentation
 
